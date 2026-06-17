@@ -5,6 +5,8 @@ const usageLevel = document.getElementById("usageLevel");
 const suggestion = document.getElementById("suggestion");
 const historyTable = document.getElementById("historyTable");
 
+let energyChart = null;
+
 form.addEventListener("submit", async function(event) {
     event.preventDefault();
 
@@ -56,12 +58,14 @@ form.addEventListener("submit", async function(event) {
             saveHistory({
                 date: date,
                 hour: hour,
+                energyValue: energyWh,
                 energy: `${energyWh} Wh`,
                 cost: `₹${estimatedCost.toFixed(2)}`,
                 level: `${data.usage_level} (${rangeText})`
             });
 
             loadHistory();
+            updateChart();
 
         } else {
             predictionText.innerText = "Prediction failed";
@@ -105,9 +109,61 @@ function loadHistory() {
     });
 }
 
+function updateChart() {
+    let history = JSON.parse(localStorage.getItem("predictionHistory")) || [];
+
+    // Show only latest 10 predictions in chart
+    history = history.slice(0, 10).reverse();
+
+    const labels = history.map(item => `${item.date} ${item.hour}:00`);
+    const energyValues = history.map(item => Number(item.energyValue));
+
+    const chartElement = document.getElementById("energyChart");
+
+    if (!chartElement) {
+        return;
+    }
+
+    const ctx = chartElement.getContext("2d");
+
+    if (energyChart !== null) {
+        energyChart.destroy();
+    }
+
+    energyChart = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: "Predicted Energy Consumption (Wh)",
+                    data: energyValues,
+                    borderWidth: 2,
+                    tension: 0.3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
 function clearHistory() {
     localStorage.removeItem("predictionHistory");
     loadHistory();
+    updateChart();
 }
 
 loadHistory();
+updateChart();

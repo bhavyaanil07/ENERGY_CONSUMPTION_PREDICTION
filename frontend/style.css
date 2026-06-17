@@ -128,3 +128,8 @@ th {
 .clear-btn:hover {
     background: #b71c1c;
 }
+canvas {
+    width: 100% !important;
+    max-height: 350px;
+    margin-top: 20px;
+}

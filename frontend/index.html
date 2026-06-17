@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Energy Consumption Predictor</title>
+
+    <!-- Chart.js for dashboard chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -49,6 +53,11 @@
             <p id="predictionText"></p>
             <p id="usageLevel"></p>
             <p id="suggestion"></p>
+        </div>
+
+        <div class="card">
+            <h2>Energy Prediction Dashboard</h2>
+            <canvas id="energyChart"></canvas>
         </div>
 
         <div class="card">
