@@ -14,10 +14,10 @@ def load_data():
 
 
 def preprocess_data(df):
-    # Convert date column to datetime
+    
     df["date"] = pd.to_datetime(df["date"])
 
-    # Create time-based features
+    
     df["hour"] = df["date"].dt.hour
     df["day"] = df["date"].dt.day
     df["month"] = df["date"].dt.month
