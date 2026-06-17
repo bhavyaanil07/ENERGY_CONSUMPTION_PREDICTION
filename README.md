@@ -37,3 +37,5 @@ MAE, RMSE, R² Score
 - Weather API integration
 - User login system
 - Monthly bill prediction
+
+
