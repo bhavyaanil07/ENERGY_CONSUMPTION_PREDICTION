@@ -23,7 +23,7 @@ print(df.info())
 print("\nSummary statistics:")
 print(df.describe())
 
-# 1. Energy consumption over time
+#1.Energy consumption over time
 plt.figure(figsize=(14, 6))
 plt.plot(df["date"], df["Appliances"])
 plt.title("Appliance Energy Consumption Over Time")
@@ -33,7 +33,7 @@ plt.tight_layout()
 plt.savefig(f"{OUTPUT_DIR}/energy_over_time.png")
 plt.close()
 
-# 2. Hourly energy usage
+#2.Hourly energy usage
 hourly_usage = df.groupby("hour")["Appliances"].mean()
 
 plt.figure(figsize=(10, 5))
@@ -45,7 +45,7 @@ plt.tight_layout()
 plt.savefig(f"{OUTPUT_DIR}/hourly_usage.png")
 plt.close()
 
-# 3. Monthly energy usage
+#3.Monthly energy usage
 monthly_usage = df.groupby("month")["Appliances"].mean()
 
 plt.figure(figsize=(10, 5))
