@@ -79,7 +79,7 @@ plt.tight_layout()
 plt.savefig(f"{OUTPUT_DIR}/temperature_vs_energy.png")
 plt.close()
 
-# 6. Correlation heatmap
+# 6. Correlation heatmap showcase
 plt.figure(figsize=(16, 10))
 numeric_df = df.select_dtypes(include=["number"])
 sns.heatmap(numeric_df.corr(), cmap="coolwarm", annot=False)
