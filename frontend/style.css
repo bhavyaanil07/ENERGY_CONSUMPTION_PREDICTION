@@ -12,7 +12,7 @@ body {
 
 .container {
     width: 90%;
-    max-width: 700px;
+    max-width: 750px;
     margin: 40px auto;
     text-align: center;
 }
@@ -51,12 +51,14 @@ label {
     font-weight: bold;
 }
 
-input {
+input,
+select {
     width: 100%;
     padding: 12px;
     border: 1px solid #ccc;
     border-radius: 8px;
     font-size: 15px;
+    background: white;
 }
 
 button {
@@ -97,4 +99,32 @@ button:hover {
     font-size: 16px;
     color: #444;
     text-align: center;
+    line-height: 1.5;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+}
+
+th {
+    background: #1e3a5f;
+    color: white;
+}
+
+.clear-btn {
+    background: #d32f2f;
+}
+
+.clear-btn:hover {
+    background: #b71c1c;
 }

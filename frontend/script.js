@@ -3,20 +3,22 @@ const resultCard = document.getElementById("resultCard");
 const predictionText = document.getElementById("predictionText");
 const usageLevel = document.getElementById("usageLevel");
 const suggestion = document.getElementById("suggestion");
+const historyTable = document.getElementById("historyTable");
 
 form.addEventListener("submit", async function(event) {
     event.preventDefault();
 
-    const temperature = document.getElementById("temperature").value;
-    const humidity = document.getElementById("humidity").value;
+    const temperature = Number(document.getElementById("temperature").value);
+    const humidity = Number(document.getElementById("humidity").value);
     const date = document.getElementById("date").value;
-    const hour = document.getElementById("hour").value;
+    const hour = Number(document.getElementById("hour").value);
+    const rate = Number(document.getElementById("rate").value);
 
     const inputData = {
-        temperature: Number(temperature),
-        humidity: Number(humidity),
+        temperature: temperature,
+        humidity: humidity,
         date: date,
-        hour: Number(hour)
+        hour: hour
     };
 
     try {
@@ -30,14 +32,38 @@ form.addEventListener("submit", async function(event) {
 
         const data = await response.json();
 
-        if (response.ok) {
-            resultCard.style.display = "block";
+        resultCard.style.display = "block";
 
-            predictionText.innerText = `Predicted Energy: ${data.predicted_energy} ${data.unit}`;
-            usageLevel.innerText = `Usage Level: ${data.usage_level}`;
-            suggestion.innerText = `Suggestion: ${data.suggestion}`;
+        if (response.ok) {
+            const energyWh = data.predicted_energy;
+            const energyKWh = energyWh / 1000;
+            const estimatedCost = energyKWh * rate;
+
+            let rangeText = "";
+
+            if (data.usage_level === "Low") {
+                rangeText = "Less than 50 Wh";
+            } else if (data.usage_level === "Medium") {
+                rangeText = "50 Wh to 99.99 Wh";
+            } else {
+                rangeText = "100 Wh and above";
+            }
+
+            predictionText.innerText = `Predicted Energy: ${energyWh} ${data.unit}`;
+            usageLevel.innerText = `Usage Level: ${data.usage_level} (${rangeText})`;
+            suggestion.innerText = `Estimated Cost: ₹${estimatedCost.toFixed(2)}. ${data.suggestion}`;
+
+            saveHistory({
+                date: date,
+                hour: hour,
+                energy: `${energyWh} Wh`,
+                cost: `₹${estimatedCost.toFixed(2)}`,
+                level: `${data.usage_level} (${rangeText})`
+            });
+
+            loadHistory();
+
         } else {
-            resultCard.style.display = "block";
             predictionText.innerText = "Prediction failed";
             usageLevel.innerText = "";
             suggestion.innerText = data.error;
@@ -50,3 +76,38 @@ form.addEventListener("submit", async function(event) {
         suggestion.innerText = "Make sure Flask backend is running on http://127.0.0.1:5000";
     }
 });
+
+function saveHistory(record) {
+    let history = JSON.parse(localStorage.getItem("predictionHistory")) || [];
+
+    history.unshift(record);
+
+    localStorage.setItem("predictionHistory", JSON.stringify(history));
+}
+
+function loadHistory() {
+    let history = JSON.parse(localStorage.getItem("predictionHistory")) || [];
+
+    historyTable.innerHTML = "";
+
+    history.forEach(item => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${item.date}</td>
+            <td>${item.hour}</td>
+            <td>${item.energy}</td>
+            <td>${item.cost}</td>
+            <td>${item.level}</td>
+        `;
+
+        historyTable.appendChild(row);
+    });
+}
+
+function clearHistory() {
+    localStorage.removeItem("predictionHistory");
+    loadHistory();
+}
+
+loadHistory();
